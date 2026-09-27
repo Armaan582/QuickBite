@@ -1,103 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { UtensilsCrossed, Heart, ShieldCheck, Truck, Headphones, Sparkles } from 'lucide-react';
+import { MapPin, ShieldCheck, Sparkles, UtensilsCrossed } from 'lucide-react';
+import quickbiteLogo from '../../assets/quickbite/quickbite-logo-main.png';
 
-export const Footer = () => {
-  return (
-    <footer className="bg-slate-900 text-slate-300 mt-20 border-t border-slate-800">
-      {/* Features highlight bar */}
-      <div className="border-b border-slate-800/80">
-        <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 text-center sm:text-left">
-          <div className="flex items-center gap-4 justify-center sm:justify-start">
-            <div className="w-12 h-12 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-400">
-              <Truck className="w-6 h-6" />
-            </div>
-            <div>
-              <h4 className="font-bold text-white text-sm">Lightning Fast Delivery</h4>
-              <p className="text-xs text-slate-400">Average 30 mins to your door</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4 justify-center sm:justify-start">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
-              <Sparkles className="w-6 h-6" />
-            </div>
-            <div>
-              <h4 className="font-bold text-white text-sm">Fresh & Hygienic</h4>
-              <p className="text-xs text-slate-400">100% verified kitchens</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4 justify-center sm:justify-start">
-            <div className="w-12 h-12 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
-              <ShieldCheck className="w-6 h-6" />
-            </div>
-            <div>
-              <h4 className="font-bold text-white text-sm">Safe & Secure Payments</h4>
-              <p className="text-xs text-slate-400">Cards, UPI & Cash on Delivery</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4 justify-center sm:justify-start">
-            <div className="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
-              <Headphones className="w-6 h-6" />
-            </div>
-            <div>
-              <h4 className="font-bold text-white text-sm">24/7 Live Support</h4>
-              <p className="text-xs text-slate-400">Always here to help you</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Footer Links */}
-      <div className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
-        <div className="space-y-4">
-          <Link to="/" className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-orange-500 flex items-center justify-center text-white font-bold">
-              <UtensilsCrossed className="w-5 h-5" />
-            </div>
-            <span className="text-xl font-extrabold text-white tracking-tight">Foodiez.</span>
-          </Link>
-          <p className="text-xs text-slate-400 leading-relaxed">
-            Delivering hot and mouth-watering dishes from the finest local restaurants right to your doorstep with love and care.
-          </p>
-        </div>
-
-        <div>
-          <h4 className="font-bold text-white text-sm mb-3 uppercase tracking-wider">For Foodies</h4>
-          <ul className="space-y-2 text-xs text-slate-400">
-            <li><Link to="/" className="hover:text-orange-400 transition-colors">Browse Restaurants</Link></li>
-            <li><Link to="/orders" className="hover:text-orange-400 transition-colors">Order History</Link></li>
-            <li><Link to="/profile" className="hover:text-orange-400 transition-colors">Manage Delivery Addresses</Link></li>
-          </ul>
-        </div>
-
-        <div>
-          <h4 className="font-bold text-white text-sm mb-3 uppercase tracking-wider">For Partners</h4>
-          <ul className="space-y-2 text-xs text-slate-400">
-            <li><Link to="/register" className="hover:text-orange-400 transition-colors">Register as Restaurant Owner</Link></li>
-            <li><Link to="/owner" className="hover:text-orange-400 transition-colors">Owner Management Portal</Link></li>
-            <li><Link to="/admin" className="hover:text-orange-400 transition-colors">Admin Dashboard</Link></li>
-          </ul>
-        </div>
-
-        <div>
-          <h4 className="font-bold text-white text-sm mb-3 uppercase tracking-wider">Demo Accounts</h4>
-          <div className="p-3 rounded-xl bg-slate-800/80 border border-slate-700/60 text-xs space-y-1 text-slate-300">
-            <p><span className="text-amber-400 font-semibold">Admin:</span> admin@foodie.com</p>
-            <p><span className="text-orange-400 font-semibold">Owner:</span> owner.pizza@foodie.com</p>
-            <p><span className="text-emerald-400 font-semibold">User:</span> user@foodie.com</p>
-            <p className="text-[11px] text-slate-400 pt-1">Password for all: <code className="text-white font-mono bg-slate-900 px-1 py-0.5 rounded">admin123 / owner123 / user123</code></p>
-          </div>
-        </div>
-      </div>
-
-      <div className="border-t border-slate-800 py-6 text-center text-xs text-slate-500">
-        <p className="flex items-center justify-center gap-1">
-          Made with <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500 inline" /> for food lovers everywhere. © {new Date().getFullYear()} Foodiez Inc.
-        </p>
-      </div>
-    </footer>
-  );
-};
+export const Footer = () => <footer className="relative mt-6 overflow-hidden bg-[#061728] text-slate-100">
+  <div className="pointer-events-none absolute -left-28 -top-32 h-72 w-72 rounded-full bg-orange-500/10 blur-3xl" /><div className="pointer-events-none absolute -bottom-36 right-0 h-72 w-72 rounded-full bg-sky-500/10 blur-3xl" />
+  <div className="relative mx-auto max-w-[1560px] px-4 py-12 sm:px-6 lg:px-8"><div className="grid gap-10 md:grid-cols-[1.35fr_.8fr_.8fr_1fr]">
+    <div><Link to="/" className="inline-block rounded-2xl bg-white p-2 shadow-lg shadow-black/15"><img src={quickbiteLogo} alt="QuickBite" className="h-20 w-[255px] object-contain" /></Link><p className="mt-5 max-w-sm text-sm leading-6 text-slate-300">The local food you crave, brought from trusted neighbourhood kitchens straight to your door.</p><p className="mt-3 text-sm font-bold text-orange-300">Crave It. Get It. Love It.</p></div>
+    <div><h3 className="text-sm font-black uppercase tracking-wider text-white">For foodies</h3><ul className="mt-5 space-y-3 text-sm text-slate-300"><li><Link to="/restaurants" className="transition hover:text-orange-300">Browse restaurants</Link></li><li><Link to="/orders" className="transition hover:text-orange-300">Your orders</Link></li><li><Link to="/profile" className="transition hover:text-orange-300">Addresses & profile</Link></li></ul></div>
+    <div><h3 className="text-sm font-black uppercase tracking-wider text-white">For partners</h3><ul className="mt-5 space-y-3 text-sm text-slate-300"><li><Link to="/register" className="transition hover:text-orange-300">Partner with QuickBite</Link></li><li><Link to="/owner" className="transition hover:text-orange-300">Restaurant portal</Link></li><li><Link to="/admin" className="transition hover:text-orange-300">Admin portal</Link></li></ul></div>
+    <div className="rounded-2xl border border-white/10 bg-white/[.045] p-5"><h3 className="text-sm font-black text-white">Made for local cravings</h3><div className="mt-4 space-y-3 text-xs text-slate-300"><p className="flex gap-2"><MapPin className="h-4 w-4 shrink-0 text-orange-300" />Discover the best kitchens around Chandigarh.</p><p className="flex gap-2"><ShieldCheck className="h-4 w-4 shrink-0 text-orange-300" />Fresh food from verified restaurant partners.</p><p className="flex gap-2"><UtensilsCrossed className="h-4 w-4 shrink-0 text-orange-300" />A quick bite for every appetite.</p></div></div>
+  </div></div>
+  <div className="relative border-t border-white/10"><div className="mx-auto flex max-w-[1560px] flex-col gap-2 px-4 py-5 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8"><span>© {new Date().getFullYear()} QuickBite. All rights reserved.</span><span className="flex items-center gap-1 text-slate-300"><Sparkles className="h-3.5 w-3.5 text-orange-300" /> Fresh, fast and made for cravings.</span></div></div>
+</footer>;

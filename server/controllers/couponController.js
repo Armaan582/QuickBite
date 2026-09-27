@@ -28,7 +28,7 @@ const validateCoupon = async (req, res, next) => {
     if (amount < coupon.minOrderAmount) {
       return res.status(400).json({
         success: false,
-        message: `Minimum order amount of $${coupon.minOrderAmount.toFixed(2)} required for this coupon`
+        message: `Minimum order amount of ₹${coupon.minOrderAmount.toFixed(0)} required for this coupon`
       });
     }
 

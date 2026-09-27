@@ -3,14 +3,14 @@ import { Link } from 'react-router-dom';
 import { Star, Clock, DollarSign, Sparkles, MapPin } from 'lucide-react';
 import { formatCurrency } from '../../utils/formatters';
 
-export const RestaurantCard = ({ restaurant }) => {
+export const RestaurantCard = ({ restaurant, compact = false }) => {
   return (
     <Link
       to={`/restaurant/${restaurant._id}`}
-      className="group relative bg-white rounded-3xl overflow-hidden border border-gray-100/80 food-card-shadow transition-all duration-300 hover:-translate-y-1.5 flex flex-col"
+      className="group relative bg-white rounded-2xl overflow-hidden border border-stone-200/80 food-card-shadow hover:-translate-y-1 flex flex-col"
     >
       {/* Restaurant Banner Image & Badges */}
-      <div className="relative h-48 sm:h-52 w-full overflow-hidden bg-gray-100">
+      <div className={`relative w-full overflow-hidden bg-gray-100 ${compact ? 'h-40' : 'h-40 sm:h-44'}`}>
         <img
           src={restaurant.image || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80'}
           alt={restaurant.name}
@@ -48,7 +48,7 @@ export const RestaurantCard = ({ restaurant }) => {
       </div>
 
       {/* Card Body */}
-      <div className="p-5 flex-1 flex flex-col justify-between">
+      <div className={`${compact ? 'p-3.5' : 'p-4'} flex-1 flex flex-col justify-between`}>
         <div>
           {/* Header & Rating */}
           <div className="flex items-start justify-between gap-2 mb-1.5">
@@ -62,18 +62,16 @@ export const RestaurantCard = ({ restaurant }) => {
           </div>
 
           {/* Cuisines */}
-          <p className="text-xs font-medium text-gray-500 line-clamp-1 mb-2">
+          <p className={`text-xs font-medium text-gray-500 line-clamp-1 ${compact ? 'mb-2.5' : 'mb-2'}`}>
             {restaurant.cuisines?.join(' • ')}
           </p>
 
           {/* Description */}
-          <p className="text-xs text-gray-400 line-clamp-2 leading-relaxed mb-4">
-            {restaurant.description}
-          </p>
+          {!compact && <p className="text-xs text-gray-400 line-clamp-2 leading-relaxed mb-4">{restaurant.description}</p>}
         </div>
 
         {/* Footer Meta: Delivery fee & Min order */}
-        <div className="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
+        <div className={`${compact ? 'pt-2.5' : 'pt-3'} border-t border-gray-100 flex items-center justify-between text-xs text-gray-500`}>
           <div className="flex items-center gap-1">
             <span className="font-semibold text-gray-700">
               {restaurant.deliveryFee === 0 ? (

@@ -49,7 +49,7 @@ const createOrder = async (req, res, next) => {
     if (subtotal < restaurant.minOrder) {
       return res.status(400).json({
         success: false,
-        message: `Minimum order amount for this restaurant is $${restaurant.minOrder.toFixed(2)}`
+        message: `Minimum order amount for this restaurant is ₹${restaurant.minOrder.toFixed(0)}`
       });
     }
 

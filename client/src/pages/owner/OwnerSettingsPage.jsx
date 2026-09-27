@@ -140,7 +140,7 @@ export const OwnerSettingsPage = () => {
                 required
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                placeholder="e.g. Bella Italia Trattoria"
+                placeholder="e.g. Amritsari Zaika"
                 className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
               />
             </div>
@@ -168,7 +168,7 @@ export const OwnerSettingsPage = () => {
                 required
                 value={formData.cuisines}
                 onChange={(e) => setFormData({ ...formData, cuisines: e.target.value })}
-                placeholder="Italian, Pizza, Pasta, Mediterranean"
+                placeholder="North Indian, Punjabi, Biryani"
                 className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
               />
             </div>
@@ -197,7 +197,7 @@ export const OwnerSettingsPage = () => {
 
               <div>
                 <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
-                  Delivery Fee ($)
+                  Delivery Fee (₹)
                 </label>
                 <input
                   type="number"
@@ -205,14 +205,14 @@ export const OwnerSettingsPage = () => {
                   min="0"
                   value={formData.deliveryFee}
                   onChange={(e) => setFormData({ ...formData, deliveryFee: e.target.value })}
-                  placeholder="2.99"
+                  placeholder="29"
                   className="w-full px-3.5 py-2 text-xs rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
-                  Min Order ($)
+                  Min Order (₹)
                 </label>
                 <input
                   type="number"
@@ -220,7 +220,7 @@ export const OwnerSettingsPage = () => {
                   min="0"
                   value={formData.minOrder}
                   onChange={(e) => setFormData({ ...formData, minOrder: e.target.value })}
-                  placeholder="15.00"
+                  placeholder="199"
                   className="w-full px-3.5 py-2 text-xs rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
                 />
               </div>
@@ -261,7 +261,9 @@ export const OwnerSettingsPage = () => {
                   type="text"
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  placeholder="+1 (555) 234-5678"
+                  placeholder="+91 98765 43210"
+                  pattern="(?:\+91[\s-]?)?[6-9][0-9]{9}"
+                  title="Enter a valid 10-digit Indian mobile number"
                   className="w-full px-3.5 py-2 text-xs rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
                 />
               </div>
@@ -284,7 +286,7 @@ export const OwnerSettingsPage = () => {
                 required
                 value={formData.street}
                 onChange={(e) => setFormData({ ...formData, street: e.target.value })}
-                placeholder="124 Little Italy Way"
+                placeholder="SCO 17, Sector 17"
                 className="w-full px-3.5 py-2 text-xs rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
               />
             </div>
@@ -301,7 +303,7 @@ export const OwnerSettingsPage = () => {
               <input
                 type="text"
                 required
-                placeholder="State"
+                placeholder="State / Union Territory"
                 value={formData.state}
                 onChange={(e) => setFormData({ ...formData, state: e.target.value })}
                 className="w-full px-3.5 py-2 text-xs rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
@@ -309,7 +311,10 @@ export const OwnerSettingsPage = () => {
               <input
                 type="text"
                 required
-                placeholder="Zip"
+                placeholder="PIN Code"
+                inputMode="numeric"
+                pattern="[1-9][0-9]{5}"
+                title="Enter a valid 6-digit Indian PIN code"
                 value={formData.zip}
                 onChange={(e) => setFormData({ ...formData, zip: e.target.value })}
                 className="w-full px-3.5 py-2 text-xs rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20"

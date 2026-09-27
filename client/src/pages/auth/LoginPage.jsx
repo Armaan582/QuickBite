@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { UtensilsCrossed, ShieldAlert, Store, User, ArrowRight, Sparkles } from 'lucide-react';
+import { ShieldAlert, Store, User, ArrowRight, Check } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import quickbiteLogo from '../../assets/quickbite/quickbite-logo-main.png';
 
 export const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [selectedRole, setSelectedRole] = useState('user');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -37,119 +39,56 @@ export const LoginPage = () => {
     }
   };
 
-  const handleDemoLogin = async (demoEmail, demoPassword, role) => {
-    setEmail(demoEmail);
-    setPassword(demoPassword);
-    setLoading(true);
-    setError('');
-
-    try {
-      const loggedInUser = await login(demoEmail, demoPassword);
-      if (loggedInUser.role === 'admin') {
-        navigate('/admin');
-      } else if (loggedInUser.role === 'restaurant_owner') {
-        navigate('/owner');
-      } else {
-        navigate('/');
-      }
-    } catch (err) {
-      setError(err.response?.data?.message || 'Demo login failed');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const roleOptions = [
+    { id: 'user', label: 'Customer', helper: 'Order your favourites', icon: User, active: 'border-emerald-500 bg-emerald-50 text-emerald-800', iconStyle: 'bg-emerald-500' },
+    { id: 'restaurant_owner', label: 'Shop Owner', helper: 'Manage your restaurant', icon: Store, active: 'border-orange-500 bg-orange-50 text-orange-800', iconStyle: 'bg-orange-500' },
+    { id: 'admin', label: 'Admin', helper: 'Manage QuickBite', icon: ShieldAlert, active: 'border-violet-500 bg-violet-50 text-violet-800', iconStyle: 'bg-violet-600' }
+  ];
 
   return (
     <div className="min-h-[85vh] flex items-center justify-center px-4 py-12">
       <div className="max-w-md w-full space-y-8 bg-white p-8 sm:p-10 rounded-3xl border border-gray-100 shadow-xl shadow-gray-100/70">
         {/* Header */}
         <div className="text-center space-y-2">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center text-white mx-auto shadow-lg shadow-orange-500/20">
-            <UtensilsCrossed className="w-6 h-6" />
-          </div>
+          <img src={quickbiteLogo} alt="QuickBite" className="h-24 w-72 object-contain mx-auto" />
           <h2 className="text-2xl font-black text-gray-900 tracking-tight">
-            Welcome back to Foodiez
+            Welcome back to QuickBite
           </h2>
           <p className="text-xs text-gray-500">
-            Sign in to your account or test using demo profiles below
+            Crave It. Get It. Love It.
           </p>
         </div>
 
-        {/* 1-Click Demo Login Shortcuts */}
-        <div className="space-y-2 pt-1">
-          <div className="flex items-center gap-1.5 text-xs font-bold text-gray-500 uppercase tracking-wider">
-            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-            <span>1-Click Instant Demo Login:</span>
+        <div className="space-y-3 pt-1">
+          <div>
+            <p className="text-xs font-extrabold uppercase tracking-wider text-gray-500">Choose your account type</p>
+            <p className="mt-1 text-xs text-gray-400">Then enter your email and password below.</p>
           </div>
-
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              type="button"
-              onClick={() => handleDemoLogin('user@foodie.com', 'user123', 'user')}
-              className="p-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100/80 border border-emerald-200 text-left transition-colors flex items-center gap-2 group"
-            >
-              <div className="w-7 h-7 rounded-lg bg-emerald-500 text-white flex items-center justify-center text-xs">
-                <User className="w-3.5 h-3.5" />
-              </div>
-              <div className="overflow-hidden">
-                <span className="font-bold text-xs text-emerald-950 block truncate">Customer</span>
-                <span className="text-[10px] text-emerald-700">user@foodie.com</span>
-              </div>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleDemoLogin('owner.pizza@foodie.com', 'owner123', 'restaurant_owner')}
-              className="p-2.5 rounded-xl bg-orange-50 hover:bg-orange-100/80 border border-orange-200 text-left transition-colors flex items-center gap-2 group"
-            >
-              <div className="w-7 h-7 rounded-lg bg-orange-500 text-white flex items-center justify-center text-xs">
-                <Store className="w-3.5 h-3.5" />
-              </div>
-              <div className="overflow-hidden">
-                <span className="font-bold text-xs text-orange-950 block truncate">Pizza Owner</span>
-                <span className="text-[10px] text-orange-700">owner.pizza</span>
-              </div>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleDemoLogin('owner.burger@foodie.com', 'owner123', 'restaurant_owner')}
-              className="p-2.5 rounded-xl bg-amber-50 hover:bg-amber-100/80 border border-amber-200 text-left transition-colors flex items-center gap-2 group"
-            >
-              <div className="w-7 h-7 rounded-lg bg-amber-500 text-white flex items-center justify-center text-xs">
-                <Store className="w-3.5 h-3.5" />
-              </div>
-              <div className="overflow-hidden">
-                <span className="font-bold text-xs text-amber-950 block truncate">Burger Owner</span>
-                <span className="text-[10px] text-amber-700">owner.burger</span>
-              </div>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleDemoLogin('admin@foodie.com', 'admin123', 'admin')}
-              className="p-2.5 rounded-xl bg-purple-50 hover:bg-purple-100/80 border border-purple-200 text-left transition-colors flex items-center gap-2 group"
-            >
-              <div className="w-7 h-7 rounded-lg bg-purple-600 text-white flex items-center justify-center text-xs">
-                <ShieldAlert className="w-3.5 h-3.5" />
-              </div>
-              <div className="overflow-hidden">
-                <span className="font-bold text-xs text-purple-950 block truncate">Admin</span>
-                <span className="text-[10px] text-purple-700">admin@foodie.com</span>
-              </div>
-            </button>
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+            {roleOptions.map((option) => {
+              const Icon = option.icon;
+              const isSelected = selectedRole === option.id;
+              return (
+                <button
+                  key={option.id}
+                  type="button"
+                  aria-pressed={isSelected}
+                  onClick={() => { setSelectedRole(option.id); setError(''); }}
+                  className={`relative flex min-h-[92px] flex-col items-center justify-center rounded-2xl border-2 p-3 text-center transition-all duration-200 ${isSelected ? `${option.active} shadow-md` : 'border-gray-100 bg-white text-gray-600 hover:-translate-y-0.5 hover:border-gray-200 hover:shadow-sm'}`}
+                >
+                  <span className={`mb-1.5 grid h-8 w-8 place-items-center rounded-xl text-white ${option.iconStyle}`}><Icon className="h-4 w-4" /></span>
+                  <span className="text-xs font-extrabold">{option.label}</span>
+                  <span className="mt-0.5 text-[10px] font-medium opacity-70">{option.helper}</span>
+                  {isSelected && <span className="absolute right-2 top-2 grid h-4 w-4 place-items-center rounded-full bg-current text-white"><Check className="h-2.5 w-2.5" /></span>}
+                </button>
+              );
+            })}
           </div>
-        </div>
-
-        <div className="relative flex items-center justify-center">
-          <div className="border-t border-gray-200 w-full" />
-          <span className="bg-white px-3 text-xs text-gray-400 font-medium uppercase tracking-wider">
-            Or Sign In Manually
-          </span>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
+          <p className="text-sm font-bold text-gray-800">Sign in as {roleOptions.find((option) => option.id === selectedRole)?.label}</p>
           <div>
             <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
               Email Address
@@ -189,7 +128,7 @@ export const LoginPage = () => {
             disabled={loading}
             className="w-full py-3.5 px-4 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-extrabold text-sm shadow-lg shadow-orange-500/20 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
           >
-            <span>{loading ? 'Signing In...' : 'Sign In'}</span>
+            <span>{loading ? 'Signing In...' : `Sign In as ${roleOptions.find((option) => option.id === selectedRole)?.label}`}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </form>

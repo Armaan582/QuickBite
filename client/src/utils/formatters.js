@@ -1,8 +1,9 @@
-// Format currency in USD
+// Format currency for the Indian QuickBite experience
 export const formatCurrency = (amount) => {
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat('en-IN', {
     style: 'currency',
-    currency: 'USD',
+    currency: 'INR',
+    maximumFractionDigits: 0,
   }).format(amount || 0);
 };
 
@@ -10,7 +11,7 @@ export const formatCurrency = (amount) => {
 export const formatDate = (dateString) => {
   if (!dateString) return '';
   const date = new Date(dateString);
-  return new Intl.DateTimeFormat('en-US', {
+  return new Intl.DateTimeFormat('en-IN', {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
@@ -24,7 +25,7 @@ export const formatDate = (dateString) => {
 export const formatShortDate = (dateString) => {
   if (!dateString) return '';
   const date = new Date(dateString);
-  return new Intl.DateTimeFormat('en-US', {
+  return new Intl.DateTimeFormat('en-IN', {
     month: 'short',
     day: 'numeric',
   }).format(date);

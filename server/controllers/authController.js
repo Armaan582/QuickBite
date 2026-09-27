@@ -1,6 +1,16 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
+// Existing local demo databases may still hold the original Foodiez fixture accounts.
+// Keep the new QuickBite addresses in the UI, while allowing only these exact demo
+// aliases to authenticate until a developer intentionally runs the destructive seeder.
+const legacyDemoEmailAliases = {
+  'admin@quickbite.com': 'admin@foodie.com',
+  'owner.amritsar@quickbite.com': 'owner.pizza@foodie.com',
+  'owner.biryani@quickbite.com': 'owner.burger@foodie.com',
+  'user@quickbite.com': 'user@foodie.com'
+};
+
 // Helper to generate JWT token
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET || 'super_secret_foodie_jwt_key_2026_secure', {
@@ -63,7 +73,15 @@ const login = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'Please provide email and password' });
     }
 
-    const user = await User.findOne({ email }).select('+password');
+    const normalizedEmail = email.trim().toLowerCase();
+    let user = await User.findOne({ email: normalizedEmail }).select('+password');
+
+    // Prefer a real QuickBite account. Only fall back when that account is absent,
+    // which makes this a backward-compatible demo migration rather than an alias
+    // for arbitrary customer accounts.
+    if (!user && legacyDemoEmailAliases[normalizedEmail]) {
+      user = await User.findOne({ email: legacyDemoEmailAliases[normalizedEmail] }).select('+password');
+    }
 
     if (!user) {
       return res.status(401).json({ success: false, message: 'Invalid credentials' });

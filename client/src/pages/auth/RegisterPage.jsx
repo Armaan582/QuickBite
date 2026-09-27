@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { UtensilsCrossed, Store, User, ArrowRight } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import quickbiteLogo from '../../assets/quickbite/quickbite-logo-main.png';
 
 export const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -46,14 +47,12 @@ export const RegisterPage = () => {
       <div className="max-w-md w-full space-y-8 bg-white p-8 sm:p-10 rounded-3xl border border-gray-100 shadow-xl shadow-gray-100/70">
         {/* Header */}
         <div className="text-center space-y-2">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center text-white mx-auto shadow-lg shadow-orange-500/20">
-            <UtensilsCrossed className="w-6 h-6" />
-          </div>
+          <img src={quickbiteLogo} alt="QuickBite" className="h-24 w-72 object-contain mx-auto" />
           <h2 className="text-2xl font-black text-gray-900 tracking-tight">
-            Create your Foodiez account
+            Create your QuickBite account
           </h2>
           <p className="text-xs text-gray-500">
-            Join millions enjoying fast and fresh food delivery
+            Get your favourite food delivered, fresh and fast.
           </p>
         </div>
 
@@ -104,7 +103,7 @@ export const RegisterPage = () => {
               required
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              placeholder="Alex Johnson"
+              placeholder="Armaan Singh"
               className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
             />
           </div>
@@ -146,7 +145,9 @@ export const RegisterPage = () => {
                 type="tel"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                placeholder="+1 555-0192"
+              placeholder="+91 98765 43210"
+              pattern="(?:\+91[\s-]?)?[6-9][0-9]{9}"
+              title="Enter a valid 10-digit Indian mobile number"
                 className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
               />
             </div>

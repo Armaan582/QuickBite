@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const bcrypt = require('bcryptjs');
 
 const User = require('../models/User');
 const Restaurant = require('../models/Restaurant');
@@ -12,655 +11,220 @@ const Coupon = require('../models/Coupon');
 dotenv.config();
 
 const connectDB = async () => {
-  try {
-    if (!process.env.MONGODB_URI) {
-      throw new Error('MONGODB_URI is not set. Add your MongoDB Atlas connection string to server/.env.');
-    }
-
-    const conn = await mongoose.connect(process.env.MONGODB_URI);
-    console.log(`MongoDB Atlas Connected for Seeding: ${conn.connection.host}`);
-  } catch (error) {
-    console.error(`MongoDB Atlas Connection Error: ${error.message}`);
-    process.exit(1);
+  if (!process.env.MONGODB_URI) {
+    throw new Error('MONGODB_URI is not set. Add your MongoDB Atlas connection string to server/.env.');
   }
+  const conn = await mongoose.connect(process.env.MONGODB_URI);
+  console.log(`MongoDB Atlas Connected for Seeding: ${conn.connection.host}`);
 };
 
+// This script intentionally clears collections before adding fixtures. It is for a local/demo
+// database only—never run it against production data without an explicit backup and approval.
 const seedDatabase = async () => {
   try {
     await connectDB();
 
-    console.log('Clearing existing data...');
-    await User.deleteMany();
-    await Restaurant.deleteMany();
-    await MenuItem.deleteMany();
-    await Order.deleteMany();
-    await Review.deleteMany();
-    await Coupon.deleteMany();
-
-    console.log('Creating demo users...');
-
-    const admin = await User.create({
-      name: 'Platform Administrator',
-      email: 'admin@foodie.com',
-      password: 'admin123',
-      role: 'admin',
-      phone: '+1 (555) 019-2834',
-      avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80',
-      addresses: [
-        {
-          street: '100 Tech Blvd, Suite 400',
-          city: 'San Francisco',
-          state: 'CA',
-          zip: '94107',
-          isDefault: true
-        }
-      ]
-    });
-
-    const owner1 = await User.create({
-      name: 'Mario Rossi',
-      email: 'owner.pizza@foodie.com',
-      password: 'owner123',
-      role: 'restaurant_owner',
-      phone: '+1 (555) 234-5678',
-      avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=150&q=80',
-      addresses: [
-        {
-          street: '124 Little Italy Way',
-          city: 'New York',
-          state: 'NY',
-          zip: '10013',
-          isDefault: true
-        }
-      ]
-    });
-
-    const owner2 = await User.create({
-      name: 'Jake Miller',
-      email: 'owner.burger@foodie.com',
-      password: 'owner123',
-      role: 'restaurant_owner',
-      phone: '+1 (555) 345-6789',
-      avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=150&q=80',
-      addresses: [
-        {
-          street: '450 Downtown Grill Ave',
-          city: 'Austin',
-          state: 'TX',
-          zip: '78701',
-          isDefault: true
-        }
-      ]
-    });
-
-    const owner3 = await User.create({
-      name: 'Kenji Sato',
-      email: 'owner.sushi@foodie.com',
-      password: 'owner123',
-      role: 'restaurant_owner',
-      phone: '+1 (555) 456-7890',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80',
-      addresses: [
-        {
-          street: '780 Sakura Way',
-          city: 'Seattle',
-          state: 'WA',
-          zip: '98101',
-          isDefault: true
-        }
-      ]
-    });
-
-    const owner4 = await User.create({
-      name: 'Priya Sharma',
-      email: 'owner.curry@foodie.com',
-      password: 'owner123',
-      role: 'restaurant_owner',
-      phone: '+1 (555) 567-8901',
-      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&q=80',
-      addresses: [
-        {
-          street: '920 Spice Garden Rd',
-          city: 'Chicago',
-          state: 'IL',
-          zip: '60611',
-          isDefault: true
-        }
-      ]
-    });
-
-    const customer1 = await User.create({
-      name: 'Alex Johnson',
-      email: 'user@foodie.com',
-      password: 'user123',
-      role: 'user',
-      phone: '+1 (555) 890-1234',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
-      addresses: [
-        {
-          street: '742 Evergreen Terrace',
-          city: 'Springfield',
-          state: 'OR',
-          zip: '97477',
-          isDefault: true
-        },
-        {
-          street: '55 2nd Street, Apt 8B',
-          city: 'San Francisco',
-          state: 'CA',
-          zip: '94105',
-          isDefault: false
-        }
-      ]
-    });
-
-    const customer2 = await User.create({
-      name: 'Sarah Parker',
-      email: 'sarah@foodie.com',
-      password: 'user123',
-      role: 'user',
-      phone: '+1 (555) 901-2345',
-      avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80',
-      addresses: [
-        {
-          street: '320 Sunset Boulevard',
-          city: 'Los Angeles',
-          state: 'CA',
-          zip: '90028',
-          isDefault: true
-        }
-      ]
-    });
-
-    console.log('Creating restaurants...');
-
-    const restaurant1 = await Restaurant.create({
-      owner: owner1._id,
-      name: 'Bella Italia Trattoria',
-      description: 'Authentic stone-baked woodfired pizzas, handmade pasta, and classic Italian antipasti crafted with imported Italian ingredients.',
-      cuisines: ['Italian', 'Pizza', 'Pasta', 'Mediterranean'],
-      image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80',
-      bannerImage: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1400&q=80',
-      rating: 4.8,
-      numReviews: 42,
-      address: {
-        street: '124 Little Italy Way',
-        city: 'New York',
-        state: 'NY',
-        zip: '10013'
-      },
-      phone: '+1 (555) 234-5678',
-      openingHours: { open: '11:00 AM', close: '11:00 PM' },
-      deliveryTime: '25-35 min',
-      deliveryFee: 2.99,
-      minOrder: 15.00,
-      isOpen: true,
-      isApproved: true,
-      isFeatured: true
-    });
-
-    const restaurant2 = await Restaurant.create({
-      owner: owner2._id,
-      name: 'The Burger Craft & Grills',
-      description: 'Gourmet smashed beef burgers, crispy buttermilk fried chicken, golden waffle fries, and thick decadent milkshakes.',
-      cuisines: ['Burgers', 'American', 'Fast Food', 'Wings'],
-      image: 'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=800&q=80',
-      bannerImage: 'https://images.unsplash.com/photo-1561758033-d89a9ad46330?auto=format&fit=crop&w=1400&q=80',
-      rating: 4.7,
-      numReviews: 38,
-      address: {
-        street: '450 Downtown Grill Ave',
-        city: 'Austin',
-        state: 'TX',
-        zip: '78701'
-      },
-      phone: '+1 (555) 345-6789',
-      openingHours: { open: '10:30 AM', close: '11:30 PM' },
-      deliveryTime: '20-30 min',
-      deliveryFee: 1.99,
-      minOrder: 12.00,
-      isOpen: true,
-      isApproved: true,
-      isFeatured: true
-    });
-
-    const restaurant3 = await Restaurant.create({
-      owner: owner3._id,
-      name: 'Sakura Japanese & Sushi Bar',
-      description: 'Artisanal nigiri, fresh sashimi platters, specialty maki rolls, and rich 24-hour slow-simmered tonkotsu ramen broth.',
-      cuisines: ['Japanese', 'Sushi', 'Asian', 'Ramen'],
-      image: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=800&q=80',
-      bannerImage: 'https://images.unsplash.com/photo-1611143669185-af224c5e3252?auto=format&fit=crop&w=1400&q=80',
-      rating: 4.9,
-      numReviews: 56,
-      address: {
-        street: '780 Sakura Way',
-        city: 'Seattle',
-        state: 'WA',
-        zip: '98101'
-      },
-      phone: '+1 (555) 456-7890',
-      openingHours: { open: '12:00 PM', close: '10:00 PM' },
-      deliveryTime: '30-45 min',
-      deliveryFee: 3.49,
-      minOrder: 20.00,
-      isOpen: true,
-      isApproved: true,
-      isFeatured: true
-    });
-
-    const restaurant4 = await Restaurant.create({
-      owner: owner4._id,
-      name: 'Spice Route Indian Bistro',
-      description: 'Rich aromatic butter chicken, fragrant dum biryanis, crispy garlic naans, and fiery tandoori sizzling platters.',
-      cuisines: ['Indian', 'Curry', 'Biryani', 'Vegetarian'],
-      image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=800&q=80',
-      bannerImage: 'https://images.unsplash.com/photo-1517244683847-7456b63c5969?auto=format&fit=crop&w=1400&q=80',
-      rating: 4.6,
-      numReviews: 29,
-      address: {
-        street: '920 Spice Garden Rd',
-        city: 'Chicago',
-        state: 'IL',
-        zip: '60611'
-      },
-      phone: '+1 (555) 567-8901',
-      openingHours: { open: '11:30 AM', close: '10:30 PM' },
-      deliveryTime: '25-40 min',
-      deliveryFee: 2.49,
-      minOrder: 15.00,
-      isOpen: true,
-      isApproved: true,
-      isFeatured: false
-    });
-
-    console.log('Creating menu items...');
-
-    // Bella Italia Menu
-    await MenuItem.create([
-      {
-        restaurant: restaurant1._id,
-        name: 'Margherita Burrata Pizza',
-        description: 'San Marzano tomato sauce, fresh buffalo burrata, sweet basil, and extra virgin olive oil.',
-        price: 16.99,
-        category: 'Pizzas',
-        image: 'https://images.unsplash.com/photo-1604382355076-af4b0eb60143?auto=format&fit=crop&w=600&q=80',
-        isVeg: true,
-        popular: true
-      },
-      {
-        restaurant: restaurant1._id,
-        name: 'Truffle Mushroom Fettuccine',
-        description: 'Fresh handmade pasta ribbons tossed in creamy black truffle butter sauce with wild porcini mushrooms.',
-        price: 19.50,
-        category: 'Pastas',
-        image: 'https://images.unsplash.com/photo-1621996346565-e3d5d62810d4?auto=format&fit=crop&w=600&q=80',
-        isVeg: true,
-        popular: true
-      },
-      {
-        restaurant: restaurant1._id,
-        name: 'Diavola Spicy Pepperoni Pizza',
-        description: 'Spicy Calabrian salami, crushed red pepper flakes, smoked provolone, and fresh mozzarella.',
-        price: 18.50,
-        category: 'Pizzas',
-        image: 'https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?auto=format&fit=crop&w=600&q=80',
-        isVeg: false,
-        popular: true
-      },
-      {
-        restaurant: restaurant1._id,
-        name: 'Crispy Calamari Fritti',
-        description: 'Tender golden squid rings served with house spicy marinara and lemon garlic aioli.',
-        price: 12.99,
-        category: 'Starters',
-        image: 'https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=600&q=80',
-        isVeg: false,
-        popular: false
-      },
-      {
-        restaurant: restaurant1._id,
-        name: 'Classic Espresso Tiramisu',
-        description: 'Ladyfingers soaked in dark espresso and marsala wine, layered with mascarpone cream and cocoa powder.',
-        price: 8.50,
-        category: 'Desserts',
-        image: 'https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&w=600&q=80',
-        isVeg: true,
-        popular: true
-      },
-      {
-        restaurant: restaurant1._id,
-        name: 'San Pellegrino Sparkling Blood Orange',
-        description: 'Chilled Italian sparkling beverage made with real Mediterranean blood orange juice.',
-        price: 3.99,
-        category: 'Beverages',
-        image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80',
-        isVeg: true,
-        popular: false
-      }
+    console.log('Clearing existing demo data...');
+    await Promise.all([
+      User.deleteMany(), Restaurant.deleteMany(), MenuItem.deleteMany(),
+      Order.deleteMany(), Review.deleteMany(), Coupon.deleteMany()
     ]);
 
-    // Burger Craft Menu
-    await MenuItem.create([
+    console.log('Creating India-first demo users...');
+    const users = await User.create([
       {
-        restaurant: restaurant2._id,
-        name: 'Double Smokehouse Bacon Cheeseburger',
-        description: 'Two smashed Angus beef patties, aged cheddar, applewood smoked bacon, crispy onion straws, and BBQ aioli.',
-        price: 14.99,
-        category: 'Burgers',
-        image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80',
-        isVeg: false,
-        popular: true
+        name: 'Rohan Mehta', email: 'admin@quickbite.com', password: 'admin123', role: 'admin',
+        phone: '+91 98765 43210',
+        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80',
+        addresses: [{ street: 'SCO 17, Sector 17', city: 'Chandigarh', state: 'Chandigarh', zip: '160017', isDefault: true }]
       },
       {
-        restaurant: restaurant2._id,
-        name: 'Nashville Hot Crispy Chicken Sandwich',
-        description: 'Buttermilk fried chicken breast drenched in cayenne chili glaze, dill pickles, and creamy coleslaw on brioche.',
-        price: 13.50,
-        category: 'Burgers',
-        image: 'https://images.unsplash.com/photo-1625813506062-0aeb1d7a094b?auto=format&fit=crop&w=600&q=80',
-        isVeg: false,
-        popular: true
+        name: 'Harpreet Singh', email: 'owner.amritsar@quickbite.com', password: 'owner123', role: 'restaurant_owner',
+        phone: '+91 98765 43211',
+        avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=150&q=80',
+        addresses: [{ street: 'SCO 28, Sector 17', city: 'Chandigarh', state: 'Chandigarh', zip: '160017', isDefault: true }]
       },
       {
-        restaurant: restaurant2._id,
-        name: 'Truffle Parmesan Loaded Fries',
-        description: 'Crispy skin-on fries tossed with white truffle oil, shaved parmesan cheese, and fresh parsley.',
-        price: 7.99,
-        category: 'Sides',
-        image: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=600&q=80',
-        isVeg: true,
-        popular: true
+        name: 'Simran Kaur', email: 'owner.biryani@quickbite.com', password: 'owner123', role: 'restaurant_owner',
+        phone: '+91 98765 43212',
+        avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80',
+        addresses: [{ street: 'SCO 42, Phase 7', city: 'Mohali', state: 'Punjab', zip: '160059', isDefault: true }]
       },
       {
-        restaurant: restaurant2._id,
-        name: 'Buffalo Chicken Wings (10 pcs)',
-        description: 'Jumbo crispy chicken wings tossed in fiery classic Buffalo sauce, served with celery and ranch dip.',
-        price: 13.99,
-        category: 'Sides',
-        image: 'https://images.unsplash.com/photo-1567620832903-9fc6debc209f?auto=format&fit=crop&w=600&q=80',
-        isVeg: false,
-        popular: false
+        name: 'Priya Sharma', email: 'owner.tandoor@quickbite.com', password: 'owner123', role: 'restaurant_owner',
+        phone: '+91 98765 43213',
+        avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&q=80',
+        addresses: [{ street: 'SCO 12, Sector 11', city: 'Panchkula', state: 'Haryana', zip: '134109', isDefault: true }]
       },
       {
-        restaurant: restaurant2._id,
-        name: 'Salted Caramel Milkshake',
-        description: 'Hand-spun vanilla bean ice cream blended with homemade salted caramel and topped with whipped cream.',
-        price: 6.50,
-        category: 'Beverages',
-        image: 'https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=600&q=80',
-        isVeg: true,
-        popular: false
+        name: 'Gurpreet Kaur', email: 'owner.chaat@quickbite.com', password: 'owner123', role: 'restaurant_owner',
+        phone: '+91 98765 43214',
+        avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80',
+        addresses: [{ street: 'SCO 8, Sector 22', city: 'Chandigarh', state: 'Chandigarh', zip: '160022', isDefault: true }]
+      },
+      {
+        name: 'Armaan Singh', email: 'user@quickbite.com', password: 'user123', role: 'user',
+        phone: '+91 98765 43215',
+        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
+        addresses: [
+          { street: 'House 144, Sector 35', city: 'Chandigarh', state: 'Chandigarh', zip: '160035', isDefault: true },
+          { street: 'Flat 8B, Sector 70', city: 'Mohali', state: 'Punjab', zip: '160071', isDefault: false }
+        ]
+      },
+      {
+        name: 'Simran Kaur', email: 'simran@quickbite.com', password: 'user123', role: 'user',
+        phone: '+91 98765 43216',
+        avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80',
+        addresses: [{ street: 'House 92, Sector 15', city: 'Panchkula', state: 'Haryana', zip: '134113', isDefault: true }]
       }
     ]);
+    const [admin, owner1, owner2, owner3, owner4, customer1, customer2] = users;
 
-    // Sakura Sushi Menu
-    await MenuItem.create([
+    console.log('Creating India-first demo restaurants...');
+    const restaurants = await Restaurant.create([
       {
-        restaurant: restaurant3._id,
-        name: 'Dragon Roll (8 pcs)',
-        description: 'Tempura shrimp and cucumber inside, layered with sliced avocado, grilled unagi eel, and sweet kabayaki sauce.',
-        price: 17.50,
-        category: 'Special Rolls',
-        image: 'https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?auto=format&fit=crop&w=600&q=80',
-        isVeg: false,
-        popular: true
+        owner: owner1._id, name: 'Amritsari Zaika',
+        description: 'Soulful Punjabi favourites, tandoor-kissed kebabs, buttery curries, and comforting Amritsari classics.',
+        cuisines: ['North Indian', 'Punjabi', 'Tandoor', 'Biryani'],
+        image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=800&q=80',
+        bannerImage: 'https://images.unsplash.com/photo-1517244683847-7456b63c5969?auto=format&fit=crop&w=1400&q=80',
+        rating: 4.8, numReviews: 42,
+        address: { street: 'SCO 28, Sector 17', city: 'Chandigarh', state: 'Chandigarh', zip: '160017' },
+        phone: '+91 98765 43211', openingHours: { open: '11:00 AM', close: '11:00 PM' },
+        deliveryTime: '25-35 min', deliveryFee: 29, minOrder: 199, isOpen: true, isApproved: true, isFeatured: true
       },
       {
-        restaurant: restaurant3._id,
-        name: 'Spicy Salmon & Tuna Poke Bowl',
-        description: 'Sashimi-grade salmon and ahi tuna, edamame, cucumber, wakame seaweed, spicy mayo over sushi rice.',
-        price: 16.99,
-        category: 'Mains',
-        image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80',
-        isVeg: false,
-        popular: true
+        owner: owner2._id, name: 'Biryani House',
+        description: 'Fragrant dum biryanis layered with basmati rice, slow-cooked meats, vegetarian favourites, and raita.',
+        cuisines: ['Biryani', 'Hyderabadi', 'North Indian', 'Mughlai'],
+        image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=800&q=80',
+        bannerImage: 'https://images.unsplash.com/photo-1631515243349-e0cb75fb8b8d?auto=format&fit=crop&w=1400&q=80',
+        rating: 4.7, numReviews: 38,
+        address: { street: 'SCO 42, Phase 7', city: 'Mohali', state: 'Punjab', zip: '160059' },
+        phone: '+91 98765 43212', openingHours: { open: '11:00 AM', close: '11:30 PM' },
+        deliveryTime: '20-30 min', deliveryFee: 39, minOrder: 249, isOpen: true, isApproved: true, isFeatured: true
       },
       {
-        restaurant: restaurant3._id,
-        name: 'Tokyo Tonkotsu Ramen',
-        description: 'Rich slow-simmered pork broth, springy ramen noodles, chashu pork belly, ajitsuke egg, nori, and scallions.',
-        price: 15.99,
-        category: 'Ramen',
-        image: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=600&q=80',
-        isVeg: false,
-        popular: true
+        owner: owner3._id, name: 'Tandoor Tales',
+        description: 'Smoky kebabs, creamy North Indian curries, fresh breads, and family-sized tandoor platters.',
+        cuisines: ['North Indian', 'Tandoor', 'Kebabs', 'Punjabi'],
+        image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=800&q=80',
+        bannerImage: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1400&q=80',
+        rating: 4.9, numReviews: 56,
+        address: { street: 'SCO 12, Sector 11', city: 'Panchkula', state: 'Haryana', zip: '134109' },
+        phone: '+91 98765 43213', openingHours: { open: '12:00 PM', close: '10:30 PM' },
+        deliveryTime: '30-40 min', deliveryFee: 29, minOrder: 199, isOpen: true, isApproved: true, isFeatured: true
       },
       {
-        restaurant: restaurant3._id,
-        name: 'Crispy Vegetable Gyoza (6 pcs)',
-        description: 'Pan-seared Japanese dumplings filled with cabbage, mushrooms, and ginger, served with ponzu dipping sauce.',
-        price: 7.99,
-        category: 'Starters',
-        image: 'https://images.unsplash.com/photo-1496116218417-1a781b1c416c?auto=format&fit=crop&w=600&q=80',
-        isVeg: true,
-        popular: false
-      },
-      {
-        restaurant: restaurant3._id,
-        name: 'Matcha Green Tea Cheesecake',
-        description: 'Japanese style creamy baked cheesecake infused with ceremonial grade Uji matcha green tea.',
-        price: 7.50,
-        category: 'Desserts',
-        image: 'https://images.unsplash.com/photo-1533134242443-d4fd215305ad?auto=format&fit=crop&w=600&q=80',
-        isVeg: true,
-        popular: false
+        owner: owner4._id, name: 'Chaat Adda',
+        description: 'Bright, tangy Chandigarh street-food classics, crisp chaats, stuffed kulchas, and cooling drinks.',
+        cuisines: ['Street Food', 'Chaat', 'North Indian', 'Snacks'],
+        image: 'https://images.unsplash.com/photo-1601050690117-94f5f6fa8bd8?auto=format&fit=crop&w=800&q=80',
+        bannerImage: 'https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1400&q=80',
+        rating: 4.6, numReviews: 29,
+        address: { street: 'SCO 8, Sector 22', city: 'Chandigarh', state: 'Chandigarh', zip: '160022' },
+        phone: '+91 98765 43214', openingHours: { open: '10:30 AM', close: '10:00 PM' },
+        deliveryTime: '20-30 min', deliveryFee: 19, minOrder: 149, isOpen: true, isApproved: true, isFeatured: false
       }
     ]);
+    const [restaurant1, restaurant2, restaurant3, restaurant4] = restaurants;
 
-    // Spice Route Menu
-    await MenuItem.create([
-      {
-        restaurant: restaurant4._id,
-        name: 'Old Delhi Butter Chicken',
-        description: 'Tender tandoor-roasted chicken simmered in a velvet tomato, butter, and fenugreek cashew cream gravy.',
-        price: 16.50,
-        category: 'Main Course',
-        image: 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=600&q=80',
-        isVeg: false,
-        popular: true
-      },
-      {
-        restaurant: restaurant4._id,
-        name: 'Hyderabadi Chicken Dum Biryani',
-        description: 'Fragrant long-grain basmati rice layered with marinated chicken, saffron, mint, and fried onions. Served with raita.',
-        price: 15.99,
-        category: 'Biryani & Rice',
-        image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=600&q=80',
-        isVeg: false,
-        popular: true
-      },
-      {
-        restaurant: restaurant4._id,
-        name: 'Paneer Tikka Masala',
-        description: 'Char-grilled cottage cheese cubes cooked in rich spiced onion-tomato masala sauce.',
-        price: 14.99,
-        category: 'Main Course',
-        image: 'https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?auto=format&fit=crop&w=600&q=80',
-        isVeg: true,
-        popular: true
-      },
-      {
-        restaurant: restaurant4._id,
-        name: 'Butter Garlic Naan (2 pcs)',
-        description: 'Tandoor-baked leavened flatbread brushed with garlic butter and fresh coriander.',
-        price: 4.50,
-        category: 'Breads & Sides',
-        image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80',
-        isVeg: true,
-        popular: true
-      },
-      {
-        restaurant: restaurant4._id,
-        name: 'Mango Cardamom Lassi',
-        description: 'Refreshing chilled yogurt drink blended with Alphonso mango pulp and fragrant green cardamom.',
-        price: 4.99,
-        category: 'Beverages',
-        image: 'https://images.unsplash.com/photo-1546173159-315724a31696?auto=format&fit=crop&w=600&q=80',
-        isVeg: true,
-        popular: false
-      }
-    ]);
+    console.log('Creating India-first menu items...');
+    const menuGroups = [
+      [restaurant1, [
+        ['Amritsari Chole Kulche', 'Spiced chickpeas with fluffy kulchas, pickled onions, and green chutney.', 249, 'Mains', true, true, 'https://images.unsplash.com/photo-1626132647523-66f5bf380027?auto=format&fit=crop&w=600&q=80'],
+        ['Paneer Tikka Masala', 'Char-grilled paneer in a silky tomato, cashew, and fenugreek gravy.', 279, 'Main Course', true, true, 'https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?auto=format&fit=crop&w=600&q=80'],
+        ['Tandoori Chicken Half', 'Yoghurt-marinated chicken roasted in the tandoor with mint chutney.', 399, 'Tandoor', false, true, 'https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?auto=format&fit=crop&w=600&q=80'],
+        ['Dal Makhani', 'Slow-cooked black lentils finished with butter, cream, and gentle spices.', 229, 'Main Course', true, false, 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=600&q=80'],
+        ['Gulab Jamun (2 pcs)', 'Warm khoya dumplings soaked in fragrant cardamom syrup.', 99, 'Desserts', true, true, 'https://images.unsplash.com/photo-1666190092159-3171cf0f3f0f?auto=format&fit=crop&w=600&q=80'],
+        ['Sweet Lassi', 'Chilled Punjabi yoghurt drink with a touch of cardamom.', 109, 'Beverages', true, false, 'https://images.unsplash.com/photo-1546173159-315724a31696?auto=format&fit=crop&w=600&q=80']
+      ]],
+      [restaurant2, [
+        ['Hyderabadi Chicken Dum Biryani', 'Aromatic basmati rice layered with marinated chicken, mint, saffron, and fried onions.', 349, 'Biryani', false, true, 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=600&q=80'],
+        ['Veg Dum Biryani', 'Long-grain basmati rice, seasonal vegetables, warm spices, and raita.', 279, 'Biryani', true, true, 'https://images.unsplash.com/photo-1633945274405-b6c8069047b0?auto=format&fit=crop&w=600&q=80'],
+        ['Mutton Biryani', 'Tender slow-cooked mutton with aromatic rice and house masala.', 499, 'Biryani', false, true, 'https://images.unsplash.com/photo-1642821373181-696a54913e93?auto=format&fit=crop&w=600&q=80'],
+        ['Chicken 65', 'Crisp South Indian-style chicken bites tossed with curry leaves and chillies.', 269, 'Starters', false, false, 'https://images.unsplash.com/photo-1630409351217-bc4fa6422075?auto=format&fit=crop&w=600&q=80'],
+        ['Raita', 'Cooling whisked yoghurt with cucumber, cumin, and coriander.', 79, 'Sides', true, false, 'https://images.unsplash.com/photo-1619894991209-9f9694be045f?auto=format&fit=crop&w=600&q=80']
+      ]],
+      [restaurant3, [
+        ['Butter Chicken', 'Tandoor-roasted chicken in a rich tomato, butter, and fenugreek gravy.', 399, 'Main Course', false, true, 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=600&q=80'],
+        ['Paneer Lababdar', 'Soft paneer simmered in a creamy onion-tomato masala.', 299, 'Main Course', true, true, 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=600&q=80'],
+        ['Chicken Seekh Kebab', 'Smoky minced chicken kebabs served with onions and green chutney.', 329, 'Kebabs', false, true, 'https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?auto=format&fit=crop&w=600&q=80'],
+        ['Garlic Naan (2 pcs)', 'Fresh tandoor bread brushed with garlic butter and coriander.', 99, 'Breads', true, true, 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80'],
+        ['Masala Chaach', 'Cooling spiced buttermilk with roasted cumin and mint.', 79, 'Beverages', true, false, 'https://images.unsplash.com/photo-1546173159-315724a31696?auto=format&fit=crop&w=600&q=80']
+      ]],
+      [restaurant4, [
+        ['Dahi Bhalla Papdi Chaat', 'Soft lentil dumplings and crisp papdi with yoghurt, chutneys, and sev.', 139, 'Chaat', true, true, 'https://images.unsplash.com/photo-1601050690117-94f5f6fa8bd8?auto=format&fit=crop&w=600&q=80'],
+        ['Pani Puri (8 pcs)', 'Crisp puris with spicy mint water, tamarind chutney, and potato filling.', 99, 'Chaat', true, true, 'https://images.unsplash.com/photo-1601050690117-94f5f6fa8bd8?auto=format&fit=crop&w=600&q=80'],
+        ['Aloo Tikki Chaat', 'Crisp potato tikki topped with chole, yoghurt, chutneys, and sev.', 129, 'Chaat', true, true, 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=600&q=80'],
+        ['Chole Bhature', 'Fluffy bhature served with spicy chickpeas, onion salad, and pickle.', 199, 'Mains', true, false, 'https://images.unsplash.com/photo-1626132647523-66f5bf380027?auto=format&fit=crop&w=600&q=80'],
+        ['Kulhad Kesar Milk', 'Warm saffron milk served in a traditional clay cup.', 89, 'Beverages', true, false, 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=600&q=80']
+      ]]
+    ];
 
-    console.log('Creating coupons...');
+    for (const [restaurant, items] of menuGroups) {
+      await MenuItem.create(items.map(([name, description, price, category, isVeg, popular, image]) => ({
+        restaurant: restaurant._id, name, description, price, category, image, isVeg, popular
+      })));
+    }
 
+    console.log('Creating India-first coupons...');
     await Coupon.create([
-      {
-        code: 'WELCOME50',
-        description: '50% off on your first order up to $15',
-        discountPercent: 50,
-        maxDiscount: 15,
-        minOrderAmount: 20,
-        isActive: true
-      },
-      {
-        code: 'TASTY20',
-        description: '20% off on all weekend feasts up to $10',
-        discountPercent: 20,
-        maxDiscount: 10,
-        minOrderAmount: 15,
-        isActive: true
-      },
-      {
-        code: 'FEAST10',
-        description: '10% off on bulk orders over $30',
-        discountPercent: 10,
-        maxDiscount: 25,
-        minOrderAmount: 30,
-        isActive: true
-      }
+      { code: 'WELCOME50', description: '50% off on your first order up to ₹150', discountPercent: 50, maxDiscount: 150, minOrderAmount: 499, isActive: true },
+      { code: 'TASTY20', description: '20% off on weekend feasts up to ₹100', discountPercent: 20, maxDiscount: 100, minOrderAmount: 399, isActive: true },
+      { code: 'FEAST10', description: '10% off on family orders above ₹999', discountPercent: 10, maxDiscount: 250, minOrderAmount: 999, isActive: true }
     ]);
 
-    console.log('Creating sample orders...');
+    console.log('Creating sample orders and reviews...');
+    const amritsarItems = await MenuItem.find({ restaurant: restaurant1._id });
+    const deliveryAddress = { street: 'House 144, Sector 35', city: 'Chandigarh', state: 'Chandigarh', zip: '160035', phone: '+91 98765 43215' };
 
-    const pizzaItems = await MenuItem.find({ restaurant: restaurant1._id });
-
-    // Delivered Order
-    await Order.create({
-      user: customer1._id,
-      restaurant: restaurant1._id,
-      items: [
-        {
-          menuItem: pizzaItems[0]._id,
-          name: pizzaItems[0].name,
-          price: pizzaItems[0].price,
-          quantity: 2,
-          image: pizzaItems[0].image
-        },
-        {
-          menuItem: pizzaItems[4]._id,
-          name: pizzaItems[4].name,
-          price: pizzaItems[4].price,
-          quantity: 1,
-          image: pizzaItems[4].image
-        }
-      ],
-      subtotal: 42.48,
-      deliveryFee: 2.99,
-      tax: 3.40,
-      discount: 10.00,
-      couponCode: 'TASTY20',
-      totalAmount: 38.87,
-      paymentMethod: 'CARD',
-      paymentStatus: 'Paid',
-      deliveryAddress: {
-        street: '742 Evergreen Terrace',
-        city: 'Springfield',
-        state: 'OR',
-        zip: '97477',
-        phone: '+1 (555) 890-1234'
+    await Order.create([
+      {
+        user: customer1._id, restaurant: restaurant1._id,
+        items: [
+          { menuItem: amritsarItems[0]._id, name: amritsarItems[0].name, price: amritsarItems[0].price, quantity: 2, image: amritsarItems[0].image },
+          { menuItem: amritsarItems[4]._id, name: amritsarItems[4].name, price: amritsarItems[4].price, quantity: 1, image: amritsarItems[4].image }
+        ],
+        subtotal: 597, deliveryFee: 29, tax: 48, discount: 100, couponCode: 'TASTY20', totalAmount: 574,
+        paymentMethod: 'UPI', paymentStatus: 'Paid', deliveryAddress, orderStatus: 'Delivered',
+        statusHistory: [
+          { status: 'Placed', timestamp: new Date(Date.now() - 7200000), note: 'Order placed' },
+          { status: 'Confirmed', timestamp: new Date(Date.now() - 6480000), note: 'Restaurant confirmed order' },
+          { status: 'Preparing', timestamp: new Date(Date.now() - 5400000), note: 'Kitchen preparing dishes' },
+          { status: 'Out for Delivery', timestamp: new Date(Date.now() - 4320000), note: 'Delivery partner is on the way' },
+          { status: 'Delivered', timestamp: new Date(Date.now() - 2880000), note: 'Delivered safely to your doorstep' }
+        ]
       },
-      orderStatus: 'Delivered',
-      statusHistory: [
-        { status: 'Placed', timestamp: new Date(Date.now() - 3600000 * 2), note: 'Order placed' },
-        { status: 'Confirmed', timestamp: new Date(Date.now() - 3600000 * 1.8), note: 'Restaurant confirmed order' },
-        { status: 'Preparing', timestamp: new Date(Date.now() - 3600000 * 1.5), note: 'Kitchen preparing dishes' },
-        { status: 'Out for Delivery', timestamp: new Date(Date.now() - 3600000 * 1.2), note: 'Rider is on the way' },
-        { status: 'Delivered', timestamp: new Date(Date.now() - 3600000 * 0.8), note: 'Delivered safely to door' }
-      ]
-    });
-
-    // Active Live Order (In preparation stage for demo live tracking)
-    await Order.create({
-      user: customer1._id,
-      restaurant: restaurant1._id,
-      items: [
-        {
-          menuItem: pizzaItems[1]._id,
-          name: pizzaItems[1].name,
-          price: pizzaItems[1].price,
-          quantity: 1,
-          image: pizzaItems[1].image
-        },
-        {
-          menuItem: pizzaItems[2]._id,
-          name: pizzaItems[2].name,
-          price: pizzaItems[2].price,
-          quantity: 1,
-          image: pizzaItems[2].image
-        }
-      ],
-      subtotal: 38.00,
-      deliveryFee: 2.99,
-      tax: 3.04,
-      discount: 0,
-      couponCode: '',
-      totalAmount: 44.03,
-      paymentMethod: 'CARD',
-      paymentStatus: 'Paid',
-      deliveryAddress: {
-        street: '742 Evergreen Terrace',
-        city: 'Springfield',
-        state: 'OR',
-        zip: '97477',
-        phone: '+1 (555) 890-1234'
-      },
-      orderStatus: 'Preparing',
-      statusHistory: [
-        { status: 'Placed', timestamp: new Date(Date.now() - 600000), note: 'Order placed by customer' },
-        { status: 'Confirmed', timestamp: new Date(Date.now() - 400000), note: 'Accepted by Bella Italia Trattoria' },
-        { status: 'Preparing', timestamp: new Date(Date.now() - 120000), note: 'Chef is baking your pizzas' }
-      ]
-    });
-
-    console.log('Creating sample reviews...');
+      {
+        user: customer1._id, restaurant: restaurant1._id,
+        items: [
+          { menuItem: amritsarItems[1]._id, name: amritsarItems[1].name, price: amritsarItems[1].price, quantity: 1, image: amritsarItems[1].image },
+          { menuItem: amritsarItems[2]._id, name: amritsarItems[2].name, price: amritsarItems[2].price, quantity: 1, image: amritsarItems[2].image }
+        ],
+        subtotal: 678, deliveryFee: 29, tax: 54, discount: 0, couponCode: '', totalAmount: 761,
+        paymentMethod: 'UPI', paymentStatus: 'Paid', deliveryAddress, orderStatus: 'Preparing',
+        statusHistory: [
+          { status: 'Placed', timestamp: new Date(Date.now() - 600000), note: 'Order placed by customer' },
+          { status: 'Confirmed', timestamp: new Date(Date.now() - 400000), note: 'Accepted by Amritsari Zaika' },
+          { status: 'Preparing', timestamp: new Date(Date.now() - 120000), note: 'Chef is preparing your order' }
+        ]
+      }
+    ]);
 
     await Review.create([
-      {
-        user: customer1._id,
-        restaurant: restaurant1._id,
-        rating: 5,
-        comment: 'Best woodfired pizza in town! The burrata was ultra creamy and the crust had the perfect char.'
-      },
-      {
-        user: customer2._id,
-        restaurant: restaurant1._id,
-        rating: 5,
-        comment: 'The Truffle Fettuccine is absolutely out of this world! Arrived steaming hot in 20 minutes.'
-      },
-      {
-        user: customer1._id,
-        restaurant: restaurant2._id,
-        rating: 5,
-        comment: 'Juicy burgers and the truffle fries are super addictive! Will definitely reorder.'
-      },
-      {
-        user: customer2._id,
-        restaurant: restaurant3._id,
-        rating: 5,
-        comment: 'Freshest sushi grade fish ever! The dragon roll and ramen broth were pure perfection.'
-      }
+      { user: customer1._id, restaurant: restaurant1._id, rating: 5, comment: 'The chole kulche tasted just like a Chandigarh favourite. Fresh, hot, and perfectly packed.' },
+      { user: customer2._id, restaurant: restaurant1._id, rating: 5, comment: 'Wonderful paneer tikka masala and a very refreshing lassi.' },
+      { user: customer1._id, restaurant: restaurant2._id, rating: 5, comment: 'The chicken dum biryani was fragrant and generous. Will order again.' },
+      { user: customer2._id, restaurant: restaurant3._id, rating: 5, comment: 'Excellent kebabs and butter chicken—our family loved the tandoor platter.' }
     ]);
 
-    console.log('✅ Seeding completed successfully!');
-    console.log('--------------------------------------------------');
+    console.log('✅ India-first demo seeding completed successfully!');
     console.log('DEMO CREDENTIALS:');
-    console.log('Admin:            admin@foodie.com / admin123');
-    console.log('Owner (Pizza):    owner.pizza@foodie.com / owner123');
-    console.log('Owner (Burger):   owner.burger@foodie.com / owner123');
-    console.log('Customer:         user@foodie.com / user123');
-    console.log('--------------------------------------------------');
-
+    console.log('Admin:              admin@quickbite.com / admin123');
+    console.log('Owner (Amritsari):  owner.amritsar@quickbite.com / owner123');
+    console.log('Owner (Biryani):    owner.biryani@quickbite.com / owner123');
+    console.log('Customer:           user@quickbite.com / user123');
     process.exit(0);
   } catch (error) {
     console.error(`Error during seeding: ${error.message}`);

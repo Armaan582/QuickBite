@@ -45,7 +45,7 @@ export const CheckoutPage = () => {
   const handleAddNewAddress = async (e) => {
     e.preventDefault();
     if (!newAddress.street || !newAddress.city || !newAddress.zip) {
-      setError('Please fill in street, city, and zip code.');
+      setError('Please fill in street, city, and a valid PIN code.');
       return;
     }
 
@@ -209,7 +209,7 @@ export const CheckoutPage = () => {
                   />
                   <input
                     type="text"
-                    placeholder="State"
+                    placeholder="State / Union Territory"
                     value={newAddress.state}
                     onChange={(e) => setNewAddress({ ...newAddress, state: e.target.value })}
                     className="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
@@ -217,7 +217,10 @@ export const CheckoutPage = () => {
                   <input
                     type="text"
                     required
-                    placeholder="Zip Code"
+                    placeholder="PIN Code"
+                    inputMode="numeric"
+                    pattern="[1-9][0-9]{5}"
+                    title="Enter a valid 6-digit Indian PIN code"
                     value={newAddress.zip}
                     onChange={(e) => setNewAddress({ ...newAddress, zip: e.target.value })}
                     className="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20"

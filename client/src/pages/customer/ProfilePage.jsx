@@ -133,7 +133,9 @@ export const ProfilePage = () => {
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder="+1 555-0192"
+                    placeholder="+91 98765 43210"
+                    pattern="(?:\+91[\s-]?)?[6-9][0-9]{9}"
+                    title="Enter a valid 10-digit Indian mobile number"
                     className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
                   />
                 </div>
@@ -257,7 +259,7 @@ export const ProfilePage = () => {
                   />
                   <input
                     type="text"
-                    placeholder="State"
+                    placeholder="State / Union Territory"
                     value={newAddr.state}
                     onChange={(e) => setNewAddr({ ...newAddr, state: e.target.value })}
                     className="w-full px-3 py-2 bg-white rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
@@ -265,7 +267,10 @@ export const ProfilePage = () => {
                   <input
                     type="text"
                     required
-                    placeholder="Zip"
+                    placeholder="PIN Code"
+                    inputMode="numeric"
+                    pattern="[1-9][0-9]{5}"
+                    title="Enter a valid 6-digit Indian PIN code"
                     value={newAddr.zip}
                     onChange={(e) => setNewAddr({ ...newAddr, zip: e.target.value })}
                     className="w-full px-3 py-2 bg-white rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20"

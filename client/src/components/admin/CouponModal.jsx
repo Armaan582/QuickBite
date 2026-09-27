@@ -94,12 +94,12 @@ export const CouponModal = ({ isOpen, onClose, onCouponCreated }) => {
 
           <div>
             <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
-              Max Cap ($)
+              Maximum Discount (₹)
             </label>
             <input
               type="number"
               min="1"
-              placeholder="15"
+              placeholder="150"
               value={formData.maxDiscount}
               onChange={(e) => setFormData({ ...formData, maxDiscount: e.target.value })}
               className="w-full px-3 py-2 text-sm rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500"
@@ -108,12 +108,12 @@ export const CouponModal = ({ isOpen, onClose, onCouponCreated }) => {
 
           <div>
             <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
-              Min Order ($)
+              Minimum Order (₹)
             </label>
             <input
               type="number"
               min="0"
-              placeholder="20"
+              placeholder="499"
               value={formData.minOrderAmount}
               onChange={(e) => setFormData({ ...formData, minOrderAmount: e.target.value })}
               className="w-full px-3 py-2 text-sm rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500"

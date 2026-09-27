@@ -4,8 +4,9 @@
 
 @layer base {
   body {
-    @apply font-sans bg-slate-50 text-slate-800;
+    @apply font-sans bg-[#f7f8fb] text-stone-800;
   }
+  html { scroll-behavior: smooth; }
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
   }
@@ -37,4 +38,86 @@
 
 .food-card-shadow:hover {
   box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.12), 0 4px 10px -2px rgba(0, 0, 0, 0.06);
+}
+
+.food-card-shadow {
+  transition: transform .28s cubic-bezier(.16, 1, .3, 1), box-shadow .28s cubic-bezier(.16, 1, .3, 1);
+}
+
+.quickbite-hero {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  box-shadow: 0 24px 60px -24px rgba(74, 33, 7, 0.45);
+}
+
+.home-hero {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center 54%;
+  box-shadow: 0 16px 34px -20px rgba(28, 12, 3, .65);
+  animation: quickbite-background-drift 10s ease-in-out infinite alternate;
+}
+
+.quickbite-home .food-card-shadow:hover {
+  box-shadow: 0 18px 28px -18px rgba(43, 20, 5, .34);
+}
+
+.quickbite-home {
+  background-image: radial-gradient(circle at 8% 22%, rgba(255, 132, 45, .09), transparent 21rem), radial-gradient(circle at 92% 55%, rgba(251, 191, 36, .08), transparent 25rem);
+}
+
+.hero-search { animation: quickbite-search-breathe 2.8s ease-in-out infinite; }
+.quickbite-home #restaurants .food-card-shadow { animation: quickbite-card-rise .45s both cubic-bezier(.16, 1, .3, 1); }
+.quickbite-home #restaurants .food-card-shadow:nth-of-type(2) { animation-delay: .06s; }
+.quickbite-home #restaurants .food-card-shadow:nth-of-type(3) { animation-delay: .12s; }
+.quickbite-home #restaurants .food-card-shadow:nth-of-type(4) { animation-delay: .18s; }
+
+@keyframes quickbite-background-drift { from { background-position: center 64%; } to { background-position: center 69%; } }
+@keyframes quickbite-background-drift-mobile { from { background-position: center 64%; } to { background-position: center 70%; } }
+@keyframes quickbite-search-breathe { 0%, 100% { box-shadow: 0 18px 36px -22px rgba(0, 0, 0, .7); } 50% { box-shadow: 0 22px 44px -20px rgba(249, 115, 22, .42); } }
+@keyframes quickbite-card-rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+.section-kicker {
+  color: #ea580c;
+  font-size: .7rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.section-title {
+  color: #1c1917;
+  font-size: clamp(1.5rem, 2vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -.035em;
+  line-height: 1.15;
+  margin-top: .25rem;
+}
+
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+.hero-enter { animation: quickbite-enter .55s both cubic-bezier(.16, 1, .3, 1); }
+.hero-enter-1 { animation-delay: .05s; }
+.hero-enter-2 { animation-delay: .12s; }
+.hero-enter-3 { animation-delay: .2s; }
+.hero-enter-4 { animation-delay: .28s; }
+.hero-enter-5 { animation-delay: .36s; }
+@keyframes quickbite-enter { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+
+@keyframes quickbite-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+.quickbite-hero::after { animation: quickbite-float 4s ease-in-out infinite; }
+
+@media (max-width: 1199px) {
+  .quickbite-hero { background-position: 62% center; }
+  .home-hero { background-size: cover; background-position: 64% center; animation: none; }
+}
+
+@media (max-width: 639px) {
+  .home-hero { background-position: 67% center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
 }

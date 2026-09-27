@@ -103,7 +103,7 @@ export const FoodCard = ({ item, restaurant }) => {
               className="px-4 py-2 rounded-xl text-xs font-bold text-orange-600 bg-orange-50 hover:bg-orange-600 hover:text-white border border-orange-200 shadow-sm transition-all duration-200 flex items-center gap-1.5 active:scale-95"
             >
               <Plus className="w-3.5 h-3.5" />
-              ADD TO CART
+              ADD
             </button>
           )
         ) : (

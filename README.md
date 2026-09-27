@@ -1,4 +1,4 @@
-# 🍕 Foodiez — Full-Stack Food Delivery Web Application
+# 🍔 QuickBite — India-First Food Delivery Web Application
 
 A modern, full-stack Food Delivery web application built with **React (Vite) + Tailwind CSS** on the frontend, **Express.js + Node.js** on the backend, and **MongoDB (Mongoose)** for the database.
 
@@ -13,10 +13,10 @@ Supports complete role-based workflows for:
 
 | Role | Email | Password | What to Test |
 | :--- | :--- | :--- | :--- |
-| **Platform Admin** | `admin@foodie.com` | `admin123` | Platform turnover, restaurant approvals, user status toggle, promo codes |
-| **Restaurant Owner 1** | `owner.pizza@foodie.com` | `owner123` | "Bella Italia Trattoria": Menu management, live order pipeline, sales stats |
-| **Restaurant Owner 2** | `owner.burger@foodie.com` | `owner123` | "The Burger Craft & Grills": Incoming orders and dish stock toggles |
-| **Customer** | `user@foodie.com` | `user123` | Ordering food, applying coupons, live order tracking, address book |
+| **Platform Admin** | `admin@quickbite.com` | `admin123` | Platform turnover, restaurant approvals, user status toggle, promo codes |
+| **Restaurant Owner 1** | `owner.amritsar@quickbite.com` | `owner123` | "Amritsari Zaika": Menu management, live order pipeline, sales stats |
+| **Restaurant Owner 2** | `owner.biryani@quickbite.com` | `owner123` | "Biryani House": Incoming orders and dish stock toggles |
+| **Customer** | `user@quickbite.com` | `user123` | Ordering food, applying coupons, live order tracking, address book |
 
 ---
 
@@ -31,7 +31,7 @@ Supports complete role-based workflows for:
 ```bash
 cd server
 npm install
-npm run seed      # Populates restaurants, dishes, demo accounts, and orders
+npm run seed      # DESTRUCTIVE for its target DB: local/demo fixtures only; never run on production
 npm start         # Starts Express API server on http://localhost:5000
 ```
 
@@ -104,10 +104,10 @@ food-delivery-app/
 ## 🍽️ Feature Highlights
 
 ### 👤 Customer Experience
-- **Cuisine Discovery**: Interactive filter pills (Italian, Burgers, Japanese, Indian, etc.).
+- **Cuisine Discovery**: Interactive filter pills for North Indian, Punjabi, Biryani, Chaat, and more.
 - **Live Search & Sort**: Fast filtering by rating (4.5+), delivery speed, and open/closed status.
 - **Categorized Menus**: Veg/Non-veg tags, bestseller badges, and high-definition dish images.
-- **Smart Cart**: Automatic delivery fee, 8% tax calculation, minimum order requirements, and multi-restaurant conflict prevention modal.
+- **Smart Cart**: INR totals, delivery fee, 8% tax calculation, minimum order requirements, and multi-restaurant conflict prevention modal.
 - **Promo Discount Codes**: Apply `WELCOME50`, `TASTY20`, `FEAST10` for discounts.
 - **Visual Live Tracker**: 5-stage real-time progress tracker (`Placed` -> `Confirmed` -> `Preparing` -> `Out for Delivery` -> `Delivered`).
 - **Ratings & Reviews**: 5-star interactive rating and review system with automatic restaurant average recalculation.

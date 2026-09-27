@@ -12,6 +12,7 @@ import { Modal } from './components/common/Modal';
 import { LoginPage } from './pages/auth/LoginPage';
 import { RegisterPage } from './pages/auth/RegisterPage';
 import { HomePage } from './pages/customer/HomePage';
+import { RestaurantsPage } from './pages/customer/RestaurantsPage';
 import { RestaurantDetailPage } from './pages/customer/RestaurantDetailPage';
 import { CartPage } from './pages/customer/CartPage';
 import { CheckoutPage } from './pages/customer/CheckoutPage';
@@ -74,10 +75,11 @@ const AppContent = () => {
     <div className="flex flex-col min-h-screen">
       <Navbar />
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+      <main className="flex-1 max-w-[1560px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6">
         <Routes>
           {/* Public & Customer Routes */}
           <Route path="/" element={<HomePage />} />
+          <Route path="/restaurants" element={<RestaurantsPage />} />
           <Route path="/restaurant/:id" element={<RestaurantDetailPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/login" element={<LoginPage />} />

@@ -130,7 +130,7 @@ export const MenuModal = ({ isOpen, onClose, editingItem, onItemSaved }) => {
 
           <div>
             <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
-              Price ($) *
+              Price (₹) *
             </label>
             <input
               type="number"
@@ -139,7 +139,7 @@ export const MenuModal = ({ isOpen, onClose, editingItem, onItemSaved }) => {
               required
               value={formData.price}
               onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-              placeholder="12.99"
+              placeholder="299"
               className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
             />
           </div>
