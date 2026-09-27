@@ -47,6 +47,55 @@ Open **http://localhost:3000** in your browser.
 
 ---
 
+## 🌐 Local and Production Environments
+
+The same codebase supports both environments without changing source code:
+
+| Environment | Frontend API target | Configuration |
+| :--- | :--- | :--- |
+| Local development | Vite proxy → `http://localhost:5000/api` | Leave `VITE_API_BASE_URL` unset. Keep the backend running on port 5000. |
+| Vercel production | Render → `https://quickbite-qeos.onrender.com/api` | Set `VITE_API_BASE_URL=https://quickbite-qeos.onrender.com` in Vercel. |
+
+### Render backend setup
+
+Deploy the repository as a Render Node web service with `server` as the Root Directory (or use `render.yaml`). Configure these environment variables in Render:
+
+```text
+NODE_ENV=production
+MONGODB_URI=<your MongoDB Atlas connection string>
+JWT_SECRET=<a long, unique random secret>
+CLIENT_ORIGINS=https://<your-vercel-project>.vercel.app
+```
+
+For a custom Vercel domain, append it as a comma-separated origin, for example:
+
+```text
+CLIENT_ORIGINS=https://quickbite.vercel.app,https://quickbite.example.in
+```
+
+Do not put any of these values in frontend source code or commit a real `.env` file. The backend health endpoint is `GET /api/health`.
+
+### Vercel frontend setup
+
+Import the repository in Vercel and set the **Root Directory** to `client`. Vercel will use the standard commands:
+
+```text
+Build Command: npm run build
+Output Directory: dist
+```
+
+Add this Vercel environment variable:
+
+```text
+VITE_API_BASE_URL=https://quickbite-qeos.onrender.com
+```
+
+`client/vercel.json` rewrites browser routes to `index.html`, so direct links and refreshes such as `/restaurants`, `/cart`, or `/order-tracking/:id` continue to work.
+
+> `npm run seed` deletes the target database before adding demo records. Use it only for a local/demo database, never for your production Atlas cluster.
+
+---
+
 ## 🏗️ Project Architecture
 
 ```

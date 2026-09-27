@@ -1,7 +1,15 @@
 import axios from 'axios';
 
+// In development the relative URL goes through Vite's localhost:5000 proxy.
+// In a deployed build VITE_API_BASE_URL should be the Render service origin,
+// for example https://quickbite-qeos.onrender.com (without a trailing /api).
+const configuredApiBaseUrl = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, '');
+const apiBaseUrl = import.meta.env.DEV
+  ? '/api'
+  : `${configuredApiBaseUrl || 'https://quickbite-qeos.onrender.com'}/api`;
+
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: apiBaseUrl,
   headers: {
     'Content-Type': 'application/json'
   }

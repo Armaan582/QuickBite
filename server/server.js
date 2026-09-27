@@ -13,7 +13,22 @@ connectDB();
 const app = express();
 
 // Middleware
-app.use(cors());
+const configuredOrigins = (process.env.CLIENT_ORIGINS || 'http://localhost:3000,http://127.0.0.1:3000')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+app.use(cors({
+  origin(origin, callback) {
+    // Requests without an Origin header include health checks and server-to-server calls.
+    if (!origin || configuredOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error(`CORS blocked for origin: ${origin}`));
+  },
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -40,6 +55,10 @@ app.use(notFound);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
+
+if (!process.env.JWT_SECRET) {
+  throw new Error('JWT_SECRET must be configured before starting the API.');
+}
 
 app.listen(PORT, () => {
   console.log(`🚀 Food Delivery Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
