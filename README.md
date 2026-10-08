@@ -64,7 +64,7 @@ Deploy the repository as a Render Node web service with `server` as the Root Dir
 NODE_ENV=production
 MONGODB_URI=<your MongoDB Atlas connection string>
 JWT_SECRET=<a long, unique random secret>
-CLIENT_ORIGINS=https://<your-vercel-project>.vercel.app
+CLIENT_ORIGINS=https://quickbite.vercel.app,https://quickbite-five-omega.vercel.app
 ```
 
 For a custom Vercel domain, append it as a comma-separated origin, for example:

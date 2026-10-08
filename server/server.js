@@ -13,10 +13,31 @@ connectDB();
 const app = express();
 
 // Middleware
-const configuredOrigins = (process.env.CLIENT_ORIGINS || 'http://localhost:3000,http://127.0.0.1:3000')
+// Local development must remain available even when CLIENT_ORIGINS is set for
+// deployed clients (for example, the Vercel production domain on Render).
+const localDevelopmentOrigins = [
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  'http://localhost:5173',
+  'http://127.0.0.1:5173'
+];
+
+// Keep the production alias and the active Vercel deployment reachable even
+// before Render environment variables are configured or a preview is promoted.
+// Additional custom domains still belong in CLIENT_ORIGINS.
+const quickBiteVercelOrigins = [
+  'https://quickbite.vercel.app',
+  'https://quickbite-five-omega.vercel.app'
+];
+
+const configuredOrigins = [
+  ...localDevelopmentOrigins,
+  ...quickBiteVercelOrigins,
+  ...(process.env.CLIENT_ORIGINS || '')
   .split(',')
   .map((origin) => origin.trim())
-  .filter(Boolean);
+  .filter(Boolean)
+];
 
 app.use(cors({
   origin(origin, callback) {
