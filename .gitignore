@@ -86,3 +86,4 @@ test-results/
 # ------------------------------------------
 .cache/
 .parcel-cache/
+.vercel/
